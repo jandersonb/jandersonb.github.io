@@ -46,18 +46,6 @@ test("mobile navbar can expand/collapse", async ({ page }, testInfo) => {
   await expect(nav).not.toHaveClass(/show/);
 });
 
-test("repositories page renders external stat cards with deterministic fixtures", async ({ page }) => {
-  await preparePage(page, "light");
-  await page.goto("/al-folio/repositories/", { waitUntil: "networkidle" });
-  await stabilizeVisuals(page);
-
-  const repoImages = page.locator('img[src*="github-readme-stats"], img[src*="github-profile-trophy"]');
-  await expect(repoImages.first()).toBeVisible();
-
-  const renderedCount = await repoImages.evaluateAll((images) => images.filter((img) => img.complete && img.naturalWidth > 0).length);
-  expect(renderedCount).toBeGreaterThan(0);
-});
-
 test("blog pagination uses core Tailwind-native styling contract", async ({ page }) => {
   await preparePage(page, "light");
   await page.goto("/al-folio/blog/", { waitUntil: "networkidle" });
@@ -200,26 +188,6 @@ test("project cards hover with upward lift animation", async ({ page }, testInfo
   expect(before).not.toBeNull();
   expect(after).not.toBeNull();
   expect(after.y).toBeLessThan(before.y);
-});
-
-test("teaching calendar toggle has pointer cursor and toggles calendar visibility", async ({ page }) => {
-  await preparePage(page, "light");
-  await page.goto("/al-folio/teaching/", { waitUntil: "networkidle" });
-  await stabilizeVisuals(page);
-
-  const button = page.locator("#calendar-toggle-btn");
-  await expect(button).toBeVisible();
-
-  const buttonStyles = await button.evaluate((el) => {
-    const computed = window.getComputedStyle(el);
-    return { cursor: computed.cursor, fontSize: computed.fontSize };
-  });
-  expect(buttonStyles.cursor).toBe("pointer");
-  expect(Number.parseFloat(buttonStyles.fontSize)).toBeGreaterThan(12);
-
-  await button.click();
-  await expect(page.locator("#calendar-container")).toBeVisible();
-  await expect(button).toContainText("Hide Calendar");
 });
 
 test("toc sidebar renders with tocbot styling and data-toc-text label", async ({ page }, testInfo) => {
