@@ -1,8 +1,8 @@
 ---
 layout: post
-date: 2015-10-22 15:59:00-0400
+date: 2024-03-04 09:00:00+1100
 inline: true
 related_posts: false
 ---
 
-A simple inline announcement.
+PhD day one!

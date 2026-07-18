@@ -2,7 +2,7 @@
 layout: about
 title: about
 permalink: /
-subtitle: Astrophysics PhD Candidate.
+subtitle: Astrophysics PhD Candidate
 
 profile:
   align: right
