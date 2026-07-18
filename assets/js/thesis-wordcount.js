@@ -1,6 +1,8 @@
 (function () {
   "use strict";
 
+  let thesisChart = null;
+
   function deltaDays(fromDate, toDate) {
     const first = fromDate ? new Date(fromDate) : new Date();
     const second = toDate ? new Date(toDate) : new Date();
@@ -29,25 +31,128 @@
     return value || fallback;
   }
 
-  function colorWithAlpha(hexColor, alpha) {
-    if (!/^#([A-Fa-f0-9]{6})$/.test(hexColor)) {
+  function toRgba(color, alpha) {
+    if (!color) {
       return "rgba(31, 119, 180, " + alpha + ")";
     }
 
-    const red = Number.parseInt(hexColor.slice(1, 3), 16);
-    const green = Number.parseInt(hexColor.slice(3, 5), 16);
-    const blue = Number.parseInt(hexColor.slice(5, 7), 16);
+    const normalized = color.trim();
 
-    return "rgba(" + red + ", " + green + ", " + blue + ", " + alpha + ")";
+    if (/^#([A-Fa-f0-9]{6})$/.test(normalized)) {
+      const red = Number.parseInt(normalized.slice(1, 3), 16);
+      const green = Number.parseInt(normalized.slice(3, 5), 16);
+      const blue = Number.parseInt(normalized.slice(5, 7), 16);
+      return "rgba(" + red + ", " + green + ", " + blue + ", " + alpha + ")";
+    }
+
+    if (/^#([A-Fa-f0-9]{3})$/.test(normalized)) {
+      const red = Number.parseInt(normalized[1] + normalized[1], 16);
+      const green = Number.parseInt(normalized[2] + normalized[2], 16);
+      const blue = Number.parseInt(normalized[3] + normalized[3], 16);
+      return "rgba(" + red + ", " + green + ", " + blue + ", " + alpha + ")";
+    }
+
+    const rgbMatch = normalized.match(/^rgba?\(([^)]+)\)$/i);
+    if (rgbMatch) {
+      const parts = rgbMatch[1].split(",").map(function (part) {
+        return part.trim();
+      });
+      if (parts.length >= 3) {
+        return "rgba(" + parts[0] + ", " + parts[1] + ", " + parts[2] + ", " + alpha + ")";
+      }
+    }
+
+    return "rgba(31, 119, 180, " + alpha + ")";
+  }
+
+  function colorWithAlpha(hexColor, alpha) {
+    return toRgba(hexColor, alpha);
+  }
+
+  function getAccentColor() {
+    const varAccent = getThemeColor("--global-theme-color", "");
+    if (varAccent) {
+      return varAccent;
+    }
+
+    const firstLink = document.querySelector("a");
+    if (firstLink) {
+      return getComputedStyle(firstLink).color;
+    }
+
+    return "#1f77b4";
+  }
+
+  function getTextColor() {
+    const bodyStyle = getComputedStyle(document.body);
+    return bodyStyle.color || "#444444";
+  }
+
+  function applyChartTheme(chart, canvas) {
+    if (!chart || !canvas) {
+      return;
+    }
+
+    const accent = getAccentColor();
+    const axis = getTextColor();
+    const gridBase = getThemeColor("--global-divider-color", axis);
+
+    const context = canvas.getContext("2d");
+    const gradient = context.createLinearGradient(0, 0, 0, canvas.clientHeight || canvas.height || 320);
+    gradient.addColorStop(0, colorWithAlpha(accent, 0.25));
+    gradient.addColorStop(1, colorWithAlpha(accent, 0.04));
+
+    const dataset = chart.data.datasets[0];
+    dataset.borderColor = accent;
+    dataset.backgroundColor = gradient;
+    dataset.pointBackgroundColor = accent;
+    dataset.pointBorderColor = accent;
+
+    chart.options.scales.x.title.color = axis;
+    chart.options.scales.x.ticks.color = axis;
+    chart.options.scales.x.grid.color = colorWithAlpha(gridBase, 0.35);
+    chart.options.scales.y.title.color = axis;
+    chart.options.scales.y.ticks.color = axis;
+    chart.options.scales.y.grid.color = colorWithAlpha(gridBase, 0.35);
+    chart.options.plugins.legend.labels.color = axis;
+
+    chart.update("none");
+  }
+
+  function registerThemeListeners(chart, canvas) {
+    const refresh = function () {
+      applyChartTheme(chart, canvas);
+    };
+
+    const observer = new MutationObserver(refresh);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class", "data-theme"] });
+    if (document.body) {
+      observer.observe(document.body, { attributes: true, attributeFilter: ["class", "data-theme"] });
+    }
+
+    const themeToggle = document.getElementById("light-toggle");
+    if (themeToggle) {
+      themeToggle.addEventListener("click", function () {
+        window.setTimeout(refresh, 0);
+        window.setTimeout(refresh, 120);
+      });
+    }
+
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+    if (typeof media.addEventListener === "function") {
+      media.addEventListener("change", refresh);
+    }
+
+    window.addEventListener("resize", function () {
+      if (thesisChart) {
+        applyChartTheme(thesisChart, canvas);
+      }
+    });
   }
 
   async function initializeThesisTracker() {
     setText("phdays", deltaDays("", "03/01/2024"));
     setText("submitdays", deltaDays("02/28/2027", ""));
-
-    const accent = getThemeColor("--global-theme-color", "#1f77b4");
-    const axis = getThemeColor("--global-text-color", "#444444");
-    const grid = getThemeColor("--global-divider-color", "#dddddd");
 
     try {
       const response = await fetch("https://jandersonb.github.io/phd-thesis/wordcount.txt?nocache=" + Date.now());
@@ -86,25 +191,21 @@
         return;
       }
 
-      const gradient = canvas.getContext("2d").createLinearGradient(0, 0, 0, canvas.height || 400);
-      gradient.addColorStop(0, colorWithAlpha(accent, 0.25));
-      gradient.addColorStop(1, colorWithAlpha(accent, 0.04));
-
-      new Chart(canvas, {
+      thesisChart = new Chart(canvas, {
         type: "line",
         data: {
           datasets: [
             {
               label: "Word Count",
               data: points,
-              borderColor: accent,
-              backgroundColor: gradient,
+              borderColor: "#1f77b4",
+              backgroundColor: "rgba(31, 119, 180, 0.12)",
               tension: 0.22,
               fill: true,
               pointRadius: 2.5,
               pointHoverRadius: 4,
-              pointBackgroundColor: accent,
-              pointBorderColor: accent,
+              pointBackgroundColor: "#1f77b4",
+              pointBorderColor: "#1f77b4",
             },
           ],
         },
@@ -120,21 +221,16 @@
                 tooltipFormat: "dd MMM yyyy HH:mm",
                 displayFormats: { day: "dd MMM yyyy" },
               },
-              title: { display: true, text: "Date", color: axis },
-              ticks: { color: axis },
-              grid: { color: colorWithAlpha(grid.startsWith("#") ? grid : "#dddddd", 0.35) },
+              title: { display: true, text: "Date" },
             },
             y: {
               beginAtZero: false,
-              title: { display: true, text: "Words", color: axis },
-              ticks: { color: axis },
-              grid: { color: colorWithAlpha(grid.startsWith("#") ? grid : "#dddddd", 0.35) },
+              title: { display: true, text: "Words" },
             },
           },
           plugins: {
             legend: {
               display: true,
-              labels: { color: axis },
             },
             tooltip: {
               mode: "index",
@@ -143,6 +239,9 @@
           },
         },
       });
+
+      applyChartTheme(thesisChart, canvas);
+      registerThemeListeners(thesisChart, canvas);
     } catch (error) {
       console.error("Error fetching or plotting word count:", error);
       showError("Unable to load word count data right now. Please try again later.");

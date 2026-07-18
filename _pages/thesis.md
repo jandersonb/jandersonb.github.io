@@ -29,7 +29,8 @@ This page is inspired by <a href="https://ordinarystarman.com/PhD/">Sean Richard
 	#wordcountPlot {
 		display: block;
 		width: 100%;
-		min-height: 340px;
+		height: clamp(220px, 36vw, 320px);
+		max-height: 320px;
 		margin-top: 1rem;
 	}
 </style>
