@@ -2,6 +2,7 @@
   "use strict";
 
   let thesisChart = null;
+  let palettePoller = null;
 
   function deltaDays(fromDate, toDate) {
     const first = fromDate ? new Date(fromDate) : new Date();
@@ -31,38 +32,37 @@
     return value || fallback;
   }
 
-  function toRgba(color, alpha) {
+  function normalizeColor(color, fallback) {
     if (!color) {
+      return fallback;
+    }
+
+    const probe = document.createElement("span");
+    probe.style.color = color;
+    probe.style.display = "none";
+    document.body.appendChild(probe);
+    const normalized = getComputedStyle(probe).color;
+    probe.remove();
+
+    return normalized || fallback;
+  }
+
+  function toRgba(color, alpha) {
+    const normalized = normalizeColor(color, "rgb(31, 119, 180)");
+    const rgbMatch = normalized.match(/^rgba?\(([^)]+)\)$/i);
+    if (!rgbMatch) {
       return "rgba(31, 119, 180, " + alpha + ")";
     }
 
-    const normalized = color.trim();
+    const parts = rgbMatch[1].split(",").map(function (part) {
+      return part.trim();
+    });
 
-    if (/^#([A-Fa-f0-9]{6})$/.test(normalized)) {
-      const red = Number.parseInt(normalized.slice(1, 3), 16);
-      const green = Number.parseInt(normalized.slice(3, 5), 16);
-      const blue = Number.parseInt(normalized.slice(5, 7), 16);
-      return "rgba(" + red + ", " + green + ", " + blue + ", " + alpha + ")";
+    if (parts.length < 3) {
+      return "rgba(31, 119, 180, " + alpha + ")";
     }
 
-    if (/^#([A-Fa-f0-9]{3})$/.test(normalized)) {
-      const red = Number.parseInt(normalized[1] + normalized[1], 16);
-      const green = Number.parseInt(normalized[2] + normalized[2], 16);
-      const blue = Number.parseInt(normalized[3] + normalized[3], 16);
-      return "rgba(" + red + ", " + green + ", " + blue + ", " + alpha + ")";
-    }
-
-    const rgbMatch = normalized.match(/^rgba?\(([^)]+)\)$/i);
-    if (rgbMatch) {
-      const parts = rgbMatch[1].split(",").map(function (part) {
-        return part.trim();
-      });
-      if (parts.length >= 3) {
-        return "rgba(" + parts[0] + ", " + parts[1] + ", " + parts[2] + ", " + alpha + ")";
-      }
-    }
-
-    return "rgba(31, 119, 180, " + alpha + ")";
+    return "rgba(" + parts[0] + ", " + parts[1] + ", " + parts[2] + ", " + alpha + ")";
   }
 
   function colorWithAlpha(hexColor, alpha) {
@@ -72,20 +72,29 @@
   function getAccentColor() {
     const varAccent = getThemeColor("--global-theme-color", "");
     if (varAccent) {
-      return varAccent;
+      return normalizeColor(varAccent, "rgb(31, 119, 180)");
     }
 
     const firstLink = document.querySelector("a");
     if (firstLink) {
-      return getComputedStyle(firstLink).color;
+      return normalizeColor(getComputedStyle(firstLink).color, "rgb(31, 119, 180)");
     }
 
-    return "#1f77b4";
+    return "rgb(31, 119, 180)";
   }
 
   function getTextColor() {
     const bodyStyle = getComputedStyle(document.body);
-    return bodyStyle.color || "#444444";
+    return normalizeColor(bodyStyle.color, "rgb(68, 68, 68)");
+  }
+
+  function getPaletteSignature() {
+    return [
+      getAccentColor(),
+      getTextColor(),
+      normalizeColor(getThemeColor("--global-divider-color", ""), "rgb(221, 221, 221)"),
+      normalizeColor(getComputedStyle(document.body).backgroundColor, "rgb(255, 255, 255)"),
+    ].join("|");
   }
 
   function applyChartTheme(chart, canvas) {
@@ -95,7 +104,7 @@
 
     const accent = getAccentColor();
     const axis = getTextColor();
-    const gridBase = getThemeColor("--global-divider-color", axis);
+    const gridBase = normalizeColor(getThemeColor("--global-divider-color", ""), axis);
 
     const context = canvas.getContext("2d");
     const gradient = context.createLinearGradient(0, 0, 0, canvas.clientHeight || canvas.height || 320);
@@ -120,8 +129,18 @@
   }
 
   function registerThemeListeners(chart, canvas) {
+    let previousSignature = getPaletteSignature();
+
     const refresh = function () {
       applyChartTheme(chart, canvas);
+      previousSignature = getPaletteSignature();
+    };
+
+    const refreshIfPaletteChanged = function () {
+      const nextSignature = getPaletteSignature();
+      if (nextSignature !== previousSignature) {
+        refresh();
+      }
     };
 
     const observer = new MutationObserver(refresh);
@@ -148,6 +167,11 @@
         applyChartTheme(thesisChart, canvas);
       }
     });
+
+    if (palettePoller) {
+      window.clearInterval(palettePoller);
+    }
+    palettePoller = window.setInterval(refreshIfPaletteChanged, 400);
   }
 
   async function initializeThesisTracker() {
