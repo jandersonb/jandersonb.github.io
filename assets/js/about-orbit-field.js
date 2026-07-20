@@ -251,6 +251,8 @@
     const width = window.innerWidth;
     const height = window.innerHeight;
     const bg = palette.background;
+    const backgroundLuminance = (bg.r * 0.2126 + bg.g * 0.7152 + bg.b * 0.0722) / 255;
+    const isDarkMode = backgroundLuminance < 0.5;
 
     context.save();
     context.clearRect(0, 0, width, height);
@@ -258,8 +260,8 @@
     context.fillRect(0, 0, width, height);
 
     const halo = context.createRadialGradient(width * 0.52, height * 0.32, 0, width * 0.52, height * 0.32, Math.max(width, height) * 0.68);
-    halo.addColorStop(0, colorToCss(palette.accent, 0.14));
-    halo.addColorStop(0.45, colorToCss(palette.accentSoft, 0.08));
+    halo.addColorStop(0, colorToCss(palette.accent, isDarkMode ? 0.08 : 0.14));
+    halo.addColorStop(0.45, colorToCss(palette.accentSoft, isDarkMode ? 0.045 : 0.08));
     halo.addColorStop(1, colorToCss(bg, 0));
     context.fillStyle = halo;
     context.fillRect(0, 0, width, height);
@@ -353,8 +355,10 @@
     const bodyBackground = parseColor(getComputedStyle(document.body).backgroundColor, { r: 255, g: 255, b: 255 });
     const textColor = parseColor(getComputedStyle(document.body).color, { r: 68, g: 68, b: 68 });
     const accentColor = parseColor(getThemeColor("--global-theme-color", ""), textColor);
-    const mutedAccent = mixColors(accentColor, bodyBackground, 0.72);
-    const connectionColor = mixColors(accentColor, textColor, 0.58);
+    const backgroundLuminance = (bodyBackground.r * 0.2126 + bodyBackground.g * 0.7152 + bodyBackground.b * 0.0722) / 255;
+    const isDarkMode = backgroundLuminance < 0.5;
+    const mutedAccent = mixColors(accentColor, bodyBackground, isDarkMode ? 0.84 : 0.72);
+    const connectionColor = mixColors(accentColor, textColor, isDarkMode ? 0.72 : 0.58);
 
     return {
       background: bodyBackground,

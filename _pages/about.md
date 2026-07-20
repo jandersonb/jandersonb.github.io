@@ -31,5 +31,3 @@ Website under construction.
 Originally from Auckland, New Zealand, I am currently completing a PhD at Swinburne University of Technology in Melbourne, Australia. 
 
 I work with the <em>N</em>-body code <a href="https://github.com/nbody6ppgpu/Nbody6PPGPU-beijing">NBODY6++GPU</a> to simulate open star clusters. I am particularly interested in how dense stellar environments impact populations of transient systems, such as X-ray binaries, type Ia supernovae, and compact mergers.
-
-<script src="{{ '/assets/js/about-orbit-field.js' | relative_url }}"></script>
