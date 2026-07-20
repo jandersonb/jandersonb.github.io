@@ -116,6 +116,15 @@
     dataset.backgroundColor = gradient;
     dataset.pointBackgroundColor = accent;
     dataset.pointBorderColor = accent;
+    dataset.pointHoverBackgroundColor = accent;
+    dataset.pointHoverBorderColor = accent;
+
+    chart.options.elements = chart.options.elements || {};
+    chart.options.elements.point = chart.options.elements.point || {};
+    chart.options.elements.point.backgroundColor = accent;
+    chart.options.elements.point.borderColor = accent;
+    chart.options.elements.point.hoverBackgroundColor = accent;
+    chart.options.elements.point.hoverBorderColor = accent;
 
     chart.options.scales.x.title.color = axis;
     chart.options.scales.x.ticks.color = axis;
