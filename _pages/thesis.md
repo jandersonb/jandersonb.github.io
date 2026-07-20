@@ -2,7 +2,7 @@
 layout: page
 title: thesis
 permalink: /thesis/
-description: Thesis page and progress tracking.
+description: Thesis word count and progress tracking.
 nav: true
 nav_order: 4
 ---

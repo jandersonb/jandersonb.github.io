@@ -27,9 +27,23 @@
   }
 
   function getThemeColor(name, fallback) {
-    const computed = getComputedStyle(document.documentElement);
-    const value = computed.getPropertyValue(name).trim();
-    return value || fallback;
+    // Prefer variables defined on the root element, but also check body
+    // because some themes toggle colors by adding classes to the body.
+    let computed = getComputedStyle(document.documentElement);
+    let value = (computed && computed.getPropertyValue) ? computed.getPropertyValue(name).trim() : "";
+    if (value) {
+      return value;
+    }
+
+    if (document.body) {
+      computed = getComputedStyle(document.body);
+      value = (computed && computed.getPropertyValue) ? computed.getPropertyValue(name).trim() : "";
+      if (value) {
+        return value;
+      }
+    }
+
+    return fallback;
   }
 
   function normalizeColor(color, fallback) {
