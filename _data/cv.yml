@@ -79,13 +79,7 @@ cv:
     Skills:
       - name: Programming
         icon: fa-solid fa-hashtag
-        keywords:
-          proficient:
-            - Python
-          experience:
-            - Bash
-            - Fortran
-            - MATLAB
+        keywords: "Python, Bash, Fortran"
       - name: Simulations
         icon: fa-solid fa-hashtag
         keywords: "NBODY6++GPU, BSE, Slurm"
