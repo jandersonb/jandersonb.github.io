@@ -84,10 +84,10 @@
   }
 
   function getAccentColor() {
-    const varAccent = getThemeColor("--global-theme-color", "");
-    if (varAccent) {
-      return normalizeColor(varAccent, "rgb(31, 119, 180)");
-    }
+    // const varAccent = getThemeColor("--global-theme-color", "");
+    // if (varAccent) {
+    //   return normalizeColor(varAccent, "rgb(31, 119, 180)");
+    // }
 
     const firstLink = document.querySelector("a");
     if (firstLink) {
