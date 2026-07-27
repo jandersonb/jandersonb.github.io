@@ -148,7 +148,7 @@
     chart.options.scales.y.grid.color = colorWithAlpha(gridBase, 0.35);
     chart.options.plugins.legend.labels.color = axis;
 
-    chart.update("none");
+    // chart.update("none");
   }
 
   function registerThemeListeners(chart, canvas) {
@@ -194,7 +194,7 @@
     if (palettePoller) {
       window.clearInterval(palettePoller);
     }
-    // palettePoller = window.setInterval(refreshIfPaletteChanged, 400);
+    palettePoller = window.setInterval(refreshIfPaletteChanged, 400);
   }
 
   async function initializeThesisTracker() {
