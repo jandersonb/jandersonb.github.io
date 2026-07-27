@@ -148,7 +148,7 @@
     chart.options.scales.y.grid.color = colorWithAlpha(gridBase, 0.35);
     chart.options.plugins.legend.labels.color = axis;
 
-    // chart.update("none");
+    chart.update("none");
   }
 
   function registerThemeListeners(chart, canvas) {
@@ -291,7 +291,7 @@
       registerThemeListeners(thesisChart, canvas);
     } catch (error) {
       console.error("Error fetching or plotting word count:", error);
-      showError(error.stack || error.message || String(error));
+      // showError(error.stack || error.message || String(error));
     }
   }
 
