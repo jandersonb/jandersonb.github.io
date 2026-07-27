@@ -194,7 +194,7 @@
     if (palettePoller) {
       window.clearInterval(palettePoller);
     }
-    palettePoller = window.setInterval(refreshIfPaletteChanged, 400);
+    // palettePoller = window.setInterval(refreshIfPaletteChanged, 400);
   }
 
   async function initializeThesisTracker() {

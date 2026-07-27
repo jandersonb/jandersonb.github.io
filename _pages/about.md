@@ -2,7 +2,7 @@
 layout: about
 title: about
 permalink: /
-subtitle: Astrophysics PhD Candidate @ <a href="https://www.swinburne.edu.au/research/centres/centre-for-astrophysics-and-supercomputing">Centre for Astrophysics and Supercomputing, Swinburne University of Technology</a>
+subtitle: Astrophysics PhD Candidate @ <a href="https://www.swinburne.edu.au/research/centres/centre-for-astrophysics-and-supercomputing">Centre for Astrophysics and Supercomputing, </br>Swinburne University of Technology</a>
 
 profile:
   align: right
@@ -12,7 +12,7 @@ profile:
     <p>1 John Street, Hawthorn, VIC 3122</p>
     <p>jandersonbaldwin@swin.edu.au</p>
 
-selected_papers: true # includes a list of papers marked as "selected={true}"
+selected_papers: false # includes a list of papers marked as "selected={true}"
 social: true # includes social icons at the bottom of the page
 
 announcements:
