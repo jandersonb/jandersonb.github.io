@@ -291,7 +291,7 @@
       registerThemeListeners(thesisChart, canvas);
     } catch (error) {
       console.error("Error fetching or plotting word count:", error);
-      showError("Unable to load word count data right now. Please try again later.");
+      showError(error.stack || error.message || String(error));
     }
   }
 
