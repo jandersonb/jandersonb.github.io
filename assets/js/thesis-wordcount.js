@@ -88,6 +88,8 @@
     // if (varAccent) {
     //   return normalizeColor(varAccent, "rgb(31, 119, 180)");
     // }
+    // Return medium grey that is visible on light and dark themes
+    return "rgb(124, 118, 128)";
 
     const firstLink = document.querySelector("a");
     if (firstLink) {
@@ -291,7 +293,7 @@
       registerThemeListeners(thesisChart, canvas);
     } catch (error) {
       console.error("Error fetching or plotting word count:", error);
-      // showError(error.stack || error.message || String(error));
+      showError(error.stack || error.message || String(error));
     }
   }
 
