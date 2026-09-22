@@ -12,7 +12,7 @@ cv:
     - network: GitHub
       username: jandersonb
     - network: LinkedIn
-      username: example
+      username: jasmine-anderson-baldwin-916a07236
 
   address:
     street: 1 John Street
@@ -69,20 +69,64 @@ cv:
         summary: Experimental testing of an extremely low-resource optical identifier (ELROI) beacon for potential use
           on microsatellites. Signal analysis and data processing using Python
         highlights:
+      
+      - company: Department of Physics, University of Auckland
+        position: Graduate Teaching Assistant
+        location: Auckland, NZ
+        start_date: Mar 2018
+        end_date: Nov 2023
+        summary: Lab and tutorial support for undergraduate physics courses, including marking and grading of assignments and tests.
+        highlights:
 
-    Awards:
+      - company: Department of Mathematics, University of Auckland
+        position: Teaching Assistant
+        location: Auckland, NZ
+        start_date: Mar 2018
+        end_date: Nov 2019
+        summary: Tutorial support for undergraduate maths courses, including marking and grading of assignments and tests.
+        highlights:
+
+      - company: Faculty of Science, University of Auckland
+        position: Tuakana Tutor
+        location: Auckland, NZ
+        start_date: Mar 2018
+        end_date: Nov 2023
+        summary: Tutoring and mentoring for indigenous undergraduate maths and physics students at the University of Auckland.
+        highlights:
+
+    Selected Awards:
       - title: LSST-DA Data Science Fellowship Program
         date: 2026
         awarder: LSST Discovery Alliance
         summary:
 
-    Skills:
-      - name: Programming
-        icon: fa-solid fa-hashtag
-        keywords: "Python, Bash, Fortran"
-      - name: Simulations
-        icon: fa-solid fa-hashtag
-        keywords: "NBODY6++GPU, BSE, Slurm"
-      - name: Data & Tools
-        icon: fa-solid fa-hashtag
-        keywords: "FITS, TLEs, DS9, LaTeX, Markdown, Jupyter, VS Code, Vim, Git, GitHub"
+      - title: Sustainability Network Research Award
+        date: 2022
+        awarder: University of Auckland
+        summary:
+
+      - title: Rangiriri & M¯atene Te Whiwhi Winiata Scholarship
+        date: 2022
+        awarder: Maori Education Trust
+        summary:
+
+      - title: Summer Research Scholarship
+        date: 2017
+        awarder: University of Auckland
+        summary:
+
+      - title: Department of Physics Scholarship
+        date: 2017
+        awarder: University of Auckland
+        summary:
+
+    # Skills:
+    #   - name: Programming
+    #     icon: fa-solid fa-hashtag
+    #     keywords: "Python, Bash, Fortran"
+    #   - name: Simulations
+    #     icon: fa-solid fa-hashtag
+    #     keywords: "NBODY6++GPU, BSE, Slurm"
+    #   - name: Data & Tools
+    #     icon: fa-solid fa-hashtag
+    #     keywords: "FITS, TLEs, DS9, LaTeX, Markdown, Jupyter, VS Code, Vim, Git, GitHub"

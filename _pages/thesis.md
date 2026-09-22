@@ -17,7 +17,7 @@ My thesis draft currently has a word count of <strong id="wordcount">...</strong
 
 <canvas id="wordcountPlot" width="600" height="400" aria-label="Word count over time"></canvas>
 
-<p id="wordcountError" style="display: none; color: #b00020; margin-top: 1rem;"></p>
+<!-- <p id="wordcountError" style="display: none; color: #b00020; margin-top: 1rem;"></p> -->
 
 This page is inspired by <a href="https://ordinarystarman.com/PhD/">Sean Richards' PhD Thesis tracker</a>.
 
